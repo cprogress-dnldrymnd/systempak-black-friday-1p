@@ -62,9 +62,36 @@ class SPBF_Settings {
 	public function hooks() {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
-		add_action( 'admin_notices', array( $this, 'admin_status_notice' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+		add_action( 'in_admin_header', array( $this, 'suppress_admin_notices' ), 1000 );
 		add_filter( 'plugin_action_links_' . plugin_basename( SPBF_FILE ), array( $this, 'action_links' ) );
+	}
+
+	/**
+	 * Whether the current screen is this plugin's settings page.
+	 *
+	 * @return bool
+	 */
+	public static function is_settings_screen() {
+		if ( empty( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return false;
+		}
+		return 'spbf-settings' === sanitize_key( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	}
+
+	/**
+	 * Hide core / third-party admin notices on this page so the UI stays clean.
+	 * Status is already shown in the page header cards.
+	 */
+	public function suppress_admin_notices() {
+		if ( ! self::is_settings_screen() ) {
+			return;
+		}
+
+		remove_all_actions( 'admin_notices' );
+		remove_all_actions( 'all_admin_notices' );
+		remove_all_actions( 'user_admin_notices' );
+		remove_all_actions( 'network_admin_notices' );
 	}
 
 	/**
@@ -147,48 +174,6 @@ class SPBF_Settings {
 		$out['show_banner']         = ( ! empty( $input['show_banner'] ) && 'yes' === $input['show_banner'] ) ? 'yes' : 'no';
 
 		return $out;
-	}
-
-	/**
-	 * Persistent admin banner showing live/test/off status.
-	 */
-	public function admin_status_notice() {
-		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			return;
-		}
-
-		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-		if ( ! $screen || ( false === strpos( $screen->id, 'spbf' ) && 'plugins' !== $screen->id && 'woocommerce_page_wc-settings' !== $screen->id ) ) {
-			// Keep notice light — only on our settings page.
-			if ( ! $screen || false === strpos( (string) $screen->id, 'spbf' ) ) {
-				return;
-			}
-		}
-
-		$vis     = SPBF_Settings::get( 'visibility' );
-		$active  = SPBF_Promotion::is_active_for_current_user();
-		$in_win  = SPBF_Promotion::is_within_schedule();
-
-		if ( 'off' === $vis ) {
-			$class = 'notice-warning';
-			$msg   = __( 'Black Friday 1p offer is OFF. Customers and admins will see normal pricing.', 'systempak-bf-1p' );
-		} elseif ( 'admin_only' === $vis ) {
-			$class = 'notice-info';
-			$msg   = __( 'Black Friday 1p offer is in ADMIN TESTING ONLY mode. Customers cannot see or use the promotion.', 'systempak-bf-1p' );
-			if ( $active ) {
-				$msg .= ' ' . __( 'You currently qualify as an admin tester — promo rules are applied for your session.', 'systempak-bf-1p' );
-			}
-		} else {
-			if ( $in_win ) {
-				$class = 'notice-success';
-				$msg   = __( 'Black Friday 1p offer is LIVE (within scheduled window).', 'systempak-bf-1p' );
-			} else {
-				$class = 'notice-warning';
-				$msg   = __( 'Black Friday 1p offer is set to Live but outside the scheduled window — promotional pricing is inactive.', 'systempak-bf-1p' );
-			}
-		}
-
-		printf( '<div class="notice %1$s"><p><strong>%2$s</strong> %3$s</p></div>', esc_attr( $class ), esc_html__( 'SystemPAK BF 1p:', 'systempak-bf-1p' ), esc_html( $msg ) );
 	}
 
 	public function render_page() {

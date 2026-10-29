@@ -1,3 +1,18 @@
+/* Hide leftover notices on this screen (third-party banners often print early). */
+body.woocommerce_page_spbf-settings #wpbody-content > .notice,
+body.woocommerce_page_spbf-settings #wpbody-content > .updated,
+body.woocommerce_page_spbf-settings #wpbody-content > .error,
+body.woocommerce_page_spbf-settings #wpbody-content > .update-nag,
+body.woocommerce_page_spbf-settings #wpbody-content > .woocommerce-message,
+body.woocommerce_page_spbf-settings #wpbody-content > .woocommerce-error,
+body.woocommerce_page_spbf-settings #wpbody-content > .woocommerce-info,
+body.woocommerce_page_spbf-settings #wpbody-content > div[class*="notice"],
+body.woocommerce_page_spbf-settings .wrap > .notice,
+body.woocommerce_page_spbf-settings #wpbody-content > .qlwcdc-notice,
+body.woocommerce_page_spbf-settings #wpbody-content > .qlwapp-notice {
+	display: none !important;
+}
+
 /* SystemPAK Black Friday admin UI */
 .spbf-wrap {
 	--spbf-ink: #142f38;
