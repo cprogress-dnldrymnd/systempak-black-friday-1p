@@ -3,7 +3,7 @@ Contributors: systempak
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 
 Black Friday “1p a Box” promotion for SystemPAK WooCommerce.

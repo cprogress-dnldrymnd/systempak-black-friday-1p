@@ -14,11 +14,14 @@ class SPBF_Pricing {
 		add_action( 'woocommerce_before_calculate_totals', array( $this, 'apply_cart_prices' ), 100000, 1 );
 
 		add_filter( 'woocommerce_product_get_price', array( $this, 'filter_price' ), 1000, 2 );
-		add_filter( 'woocommerce_product_get_sale_price', array( $this, 'filter_price' ), 1000, 2 );
 		add_filter( 'woocommerce_product_variation_get_price', array( $this, 'filter_price' ), 1000, 2 );
-		add_filter( 'woocommerce_product_variation_get_sale_price', array( $this, 'filter_price' ), 1000, 2 );
 		add_filter( 'woocommerce_variation_prices_price', array( $this, 'filter_variation_price' ), 1000, 3 );
-		add_filter( 'woocommerce_variation_prices_sale_price', array( $this, 'filter_variation_price' ), 1000, 3 );
+
+		// Do not mark as "on sale" — avoids theme “100% OFF” badges and strikethrough regular price.
+		add_filter( 'woocommerce_product_is_on_sale', array( $this, 'disable_on_sale_flag' ), 1000, 2 );
+		add_filter( 'woocommerce_sale_flash', array( $this, 'hide_sale_flash' ), 1000, 3 );
+		add_filter( 'woocommerce_get_price_html', array( $this, 'filter_price_html' ), 1000, 2 );
+		add_filter( 'tiered_pricing_table/catalog_pricing/price_html', array( $this, 'filter_tier_catalog_price_html' ), 1000, 3 );
 
 		// Skip tiered pricing recalculation for promo SKUs.
 		add_filter( 'tiered_pricing_table/cart/need_price_recalculation', array( $this, 'skip_tier_pricing' ), 100, 2 );
@@ -29,6 +32,20 @@ class SPBF_Pricing {
 
 		// Bust variation price transient cache when promo state changes for a viewer.
 		add_filter( 'woocommerce_get_variation_prices_hash', array( $this, 'variation_prices_hash' ), 100, 3 );
+	}
+
+	/**
+	 * @param WC_Product $product Product.
+	 * @return bool
+	 */
+	private function is_active_promo_product( $product ) {
+		if ( ! SPBF_Promotion::is_active_for_current_user() ) {
+			return false;
+		}
+		if ( ! $product instanceof WC_Product ) {
+			return false;
+		}
+		return SPBF_Product::is_qualifying_product( $product->get_id() );
 	}
 
 	/**
@@ -76,13 +93,7 @@ class SPBF_Pricing {
 		if ( is_admin() && ! wp_doing_ajax() ) {
 			return $price;
 		}
-		if ( ! SPBF_Promotion::is_active_for_current_user() ) {
-			return $price;
-		}
-		if ( ! $product instanceof WC_Product ) {
-			return $price;
-		}
-		if ( ! SPBF_Product::is_qualifying_product( $product->get_id() ) ) {
+		if ( ! $this->is_active_promo_product( $product ) ) {
 			return $price;
 		}
 		return self::get_promo_price();
@@ -96,6 +107,69 @@ class SPBF_Pricing {
 	 */
 	public function filter_variation_price( $price, $variation, $product ) {
 		return $this->filter_price( $price, $variation );
+	}
+
+	/**
+	 * @param bool       $on_sale On sale.
+	 * @param WC_Product $product Product.
+	 * @return bool
+	 */
+	public function disable_on_sale_flag( $on_sale, $product ) {
+		if ( $this->is_active_promo_product( $product ) ) {
+			return false;
+		}
+		return $on_sale;
+	}
+
+	/**
+	 * @param string     $html Sale flash HTML.
+	 * @param WP_Post    $post Post.
+	 * @param WC_Product $product Product.
+	 * @return string
+	 */
+	public function hide_sale_flash( $html, $post, $product ) {
+		if ( $this->is_active_promo_product( $product ) ) {
+			return '';
+		}
+		return $html;
+	}
+
+	/**
+	 * Show a clean £0.01 price with no strikethrough / % OFF treatment.
+	 *
+	 * @param string     $html Price HTML.
+	 * @param WC_Product $product Product.
+	 * @return string
+	 */
+	public function filter_price_html( $html, $product ) {
+		if ( ! $this->is_active_promo_product( $product ) ) {
+			return $html;
+		}
+
+		$price = self::get_promo_price();
+		return wc_price(
+			wc_get_price_to_display(
+				$product,
+				array(
+					'price' => $price,
+				)
+			)
+		) . $product->get_price_suffix( $price );
+	}
+
+	/**
+	 * Override Tier Pricing catalog price HTML for promo products.
+	 *
+	 * @param string     $html Tier HTML.
+	 * @param string     $default Default HTML.
+	 * @param WC_Product $product Product.
+	 * @return string
+	 */
+	public function filter_tier_catalog_price_html( $html, $default, $product ) {
+		if ( $this->is_active_promo_product( $product ) ) {
+			return $this->filter_price_html( '', $product );
+		}
+		return $html;
 	}
 
 	/**
