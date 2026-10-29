@@ -27,7 +27,6 @@ class SPBF_Settings {
 			'fee_label'            => 'Black Friday delivery (per box)',
 			'collection_page_id'   => 0,
 			'show_product_notice'  => 'yes',
-			'show_banner'          => 'yes',
 			'allowed_countries'    => array( 'GB' ),
 		);
 	}
@@ -171,7 +170,7 @@ class SPBF_Settings {
 
 		$out['collection_page_id']  = isset( $input['collection_page_id'] ) ? absint( $input['collection_page_id'] ) : 0;
 		$out['show_product_notice'] = ( ! empty( $input['show_product_notice'] ) && 'yes' === $input['show_product_notice'] ) ? 'yes' : 'no';
-		$out['show_banner']         = ( ! empty( $input['show_banner'] ) && 'yes' === $input['show_banner'] ) ? 'yes' : 'no';
+		unset( $out['show_banner'] );
 
 		return $out;
 	}
@@ -385,7 +384,7 @@ class SPBF_Settings {
 			<section class="spbf-card">
 				<div class="spbf-card__header">
 					<h2><?php esc_html_e( 'Storefront', 'systempak-bf-1p' ); ?></h2>
-					<p><?php esc_html_e( 'Collection page, product messaging and homepage banner.', 'systempak-bf-1p' ); ?></p>
+					<p><?php esc_html_e( 'Collection page and product messaging.', 'systempak-bf-1p' ); ?></p>
 				</div>
 				<div class="spbf-card__body">
 					<table class="form-table" role="presentation">
@@ -403,7 +402,7 @@ class SPBF_Settings {
 									)
 								);
 								?>
-								<p class="description"><?php esc_html_e( 'Page should contain [spbf_collection]. Used as the banner CTA link.', 'systempak-bf-1p' ); ?></p>
+								<p class="description"><?php esc_html_e( 'Page should contain [spbf_collection]. Use this URL in marketing links.', 'systempak-bf-1p' ); ?></p>
 							</td>
 						</tr>
 						<tr>
@@ -413,16 +412,6 @@ class SPBF_Settings {
 									<input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[show_product_notice]" value="yes" <?php checked( $s['show_product_notice'], 'yes' ); ?> />
 									<span><?php esc_html_e( 'Show Black Friday messaging near Add to Basket', 'systempak-bf-1p' ); ?></span>
 								</label>
-							</td>
-						</tr>
-						<tr>
-							<th scope="row"><?php esc_html_e( 'Homepage banner', 'systempak-bf-1p' ); ?></th>
-							<td>
-								<label class="spbf-switch-row">
-									<input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[show_banner]" value="yes" <?php checked( $s['show_banner'], 'yes' ); ?> />
-									<span><?php esc_html_e( 'Show homepage banner when the promotion is active for the viewer', 'systempak-bf-1p' ); ?></span>
-								</label>
-								<p class="description"><code>[spbf_banner]</code> · <code>[spbf_collection]</code></p>
 							</td>
 						</tr>
 					</table>

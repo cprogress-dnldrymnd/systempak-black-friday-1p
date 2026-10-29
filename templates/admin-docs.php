@@ -92,10 +92,6 @@ $products_link   = admin_url( 'edit.php?post_type=product' );
 					<td><code>[spbf_collection]</code></td>
 					<td><?php esc_html_e( 'Lists all qualifying promotional products with offer rules copy. Use on the dedicated collection page.', 'systempak-bf-1p' ); ?></td>
 				</tr>
-				<tr>
-					<td><code>[spbf_banner]</code></td>
-					<td><?php esc_html_e( 'Homepage / marketing CTA linking to the collection page. Also auto-injected at the top of the front page when the banner setting is enabled.', 'systempak-bf-1p' ); ?></td>
-				</tr>
 			</tbody>
 		</table>
 		<p>

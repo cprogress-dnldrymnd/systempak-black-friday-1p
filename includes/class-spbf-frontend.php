@@ -12,25 +12,8 @@ class SPBF_Frontend {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'woocommerce_before_add_to_cart_form', array( $this, 'render_product_notice' ), 15 );
 		add_shortcode( 'spbf_collection', array( $this, 'shortcode_collection' ) );
-		add_shortcode( 'spbf_banner', array( $this, 'shortcode_banner' ) );
 		add_action( 'woocommerce_cart_totals_before_shipping', array( $this, 'cart_reminder' ) );
 		add_action( 'woocommerce_review_order_before_shipping', array( $this, 'cart_reminder' ) );
-		// Auto-inject on the static front page (Elementor-safe; no builder edit required).
-		add_action( 'wp_body_open', array( $this, 'maybe_render_homepage_banner' ), 5 );
-	}
-
-	/**
-	 * Output banner at top of the site front page when enabled.
-	 */
-	public function maybe_render_homepage_banner() {
-		if ( ! is_front_page() ) {
-			return;
-		}
-		if ( 'yes' !== SPBF_Settings::get( 'show_banner', 'yes' ) ) {
-			return;
-		}
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- shortcode returns escaped markup.
-		echo $this->shortcode_banner();
 	}
 
 	public function enqueue_assets() {
@@ -141,24 +124,6 @@ class SPBF_Frontend {
 		$product_ids = SPBF_Product::get_qualifying_product_ids();
 		$columns     = max( 1, absint( $atts['columns'] ) );
 		include SPBF_PATH . 'templates/collection.php';
-		return ob_get_clean();
-	}
-
-	/**
-	 * [spbf_banner]
-	 *
-	 * @return string
-	 */
-	public function shortcode_banner() {
-		if ( ! SPBF_Promotion::should_show_marketing() ) {
-			return '';
-		}
-
-		$page_id = absint( SPBF_Settings::get( 'collection_page_id', 0 ) );
-		$url     = $page_id ? get_permalink( $page_id ) : '';
-
-		ob_start();
-		include SPBF_PATH . 'templates/banner.php';
 		return ob_get_clean();
 	}
 }

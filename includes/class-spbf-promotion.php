@@ -83,15 +83,6 @@ class SPBF_Promotion {
 	}
 
 	/**
-	 * Public-facing content (collection/banner) — same gate as pricing.
-	 *
-	 * @return bool
-	 */
-	public static function should_show_marketing() {
-		return self::is_active_for_current_user() && 'yes' === SPBF_Settings::get( 'show_banner', 'yes' );
-	}
-
-	/**
 	 * Formatted end date for customer messaging.
 	 *
 	 * @return string

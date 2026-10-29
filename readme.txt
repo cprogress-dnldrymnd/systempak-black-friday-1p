@@ -3,7 +3,7 @@ Contributors: systempak
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.0.5
 License: GPLv2 or later
 
 Black Friday “1p a Box” promotion for SystemPAK WooCommerce.
@@ -28,14 +28,12 @@ In WP Admin go to **WooCommerce → Black Friday 1p → How to use** for the ful
 2. Leave Visibility on **Admin testing only** until signed off.
 3. Assign products via the **Black Friday 1p Offer** product category only.
 4. Create a page containing `[spbf_collection]` and select it under WooCommerce → Black Friday 1p.
-5. Homepage banner auto-injects on the front page when enabled; optional `[spbf_banner]` shortcode.
-6. Confirm VAT treatment of the 1p price and £10.95 fee with the client.
-7. Switch Visibility to **Live** for the campaign window.
+5. Confirm VAT treatment of the 1p price and £10.95 fee with the client.
+6. Switch Visibility to **Live** for the campaign window.
 
 == Shortcodes ==
 
 * `[spbf_collection]` — promotional product grid + rules copy
-* `[spbf_banner]` — homepage / marketing CTA (hidden when promo inactive for the viewer)
 
 == Important ==
 

@@ -63,7 +63,6 @@ if ( 'settings' === $cmd ) {
 		'fee_label'           => 'Black Friday delivery (per box)',
 		'collection_page_id'  => $page_id,
 		'show_product_notice' => 'yes',
-		'show_banner'         => 'yes',
 		'allowed_countries'   => array( 'GB' ),
 	);
 	spbf_write_hex_file( $argv[3], serialize( $settings ) );
