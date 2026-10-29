@@ -120,10 +120,49 @@ class SPBF_Frontend {
 			return '';
 		}
 
+		$include_private = SPBF_Promotion::should_include_private_products();
+		$product_ids     = SPBF_Product::get_qualifying_product_ids( $include_private );
+		$columns         = max( 1, absint( $atts['columns'] ) );
+
+		if ( $include_private ) {
+			add_filter( 'woocommerce_shortcode_products_query', array( $this, 'allow_private_in_products_shortcode' ), 20, 3 );
+		}
+
 		ob_start();
-		$product_ids = SPBF_Product::get_qualifying_product_ids();
-		$columns     = max( 1, absint( $atts['columns'] ) );
 		include SPBF_PATH . 'templates/collection.php';
-		return ob_get_clean();
+		$html = ob_get_clean();
+
+		if ( $include_private ) {
+			remove_filter( 'woocommerce_shortcode_products_query', array( $this, 'allow_private_in_products_shortcode' ), 20 );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Let WooCommerce [products] shortcode render private items while admin-testing.
+	 *
+	 * @param array  $query_args Query args.
+	 * @param array  $attributes Shortcode attributes.
+	 * @param string $type Shortcode type.
+	 * @return array
+	 */
+	public function allow_private_in_products_shortcode( $query_args, $attributes = array(), $type = '' ) {
+		$query_args['post_status'] = array( 'publish', 'private' );
+
+		// Private/test SKUs are often catalog-hidden; keep ID-based results visible for admins.
+		if ( ! empty( $query_args['tax_query'] ) && is_array( $query_args['tax_query'] ) ) {
+			foreach ( $query_args['tax_query'] as $key => $tax ) {
+				if ( ! is_array( $tax ) ) {
+					continue;
+				}
+				if ( isset( $tax['taxonomy'] ) && 'product_visibility' === $tax['taxonomy'] ) {
+					unset( $query_args['tax_query'][ $key ] );
+				}
+			}
+			$query_args['tax_query'] = array_values( $query_args['tax_query'] );
+		}
+
+		return $query_args;
 	}
 }

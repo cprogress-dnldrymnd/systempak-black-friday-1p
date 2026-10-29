@@ -102,6 +102,7 @@ $products_link   = admin_url( 'edit.php?post_type=product' );
 				<?php esc_html_e( 'Not set — create a page with [spbf_collection] and select it under Settings.', 'systempak-bf-1p' ); ?>
 			<?php endif; ?>
 		</p>
+		<p><em><?php esc_html_e( 'While Visibility is Admin testing only, [spbf_collection] also shows private products in the Black Friday category (for shop managers / admins). Live mode shows published products only.', 'systempak-bf-1p' ); ?></em></p>
 	</section>
 
 	<section id="spbf-docs-test" class="spbf-docs__section">

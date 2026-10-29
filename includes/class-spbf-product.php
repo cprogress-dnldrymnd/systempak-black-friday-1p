@@ -126,16 +126,29 @@ class SPBF_Product {
 	/**
 	 * Product IDs currently assigned to the offer (for collection page).
 	 *
+	 * @param bool|null $include_private Include private products (defaults from promo testing mode).
 	 * @return int[] Parent product IDs.
 	 */
-	public static function get_qualifying_product_ids() {
+	public static function get_qualifying_product_ids( $include_private = null ) {
+		if ( null === $include_private ) {
+			$include_private = SPBF_Promotion::should_include_private_products();
+		}
+
+		$statuses = array( 'publish' );
+		if ( $include_private ) {
+			$statuses[] = 'private';
+		}
+
 		$ids = get_posts(
 			array(
-				'post_type'      => 'product',
-				'post_status'    => 'publish',
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-				'tax_query'      => array(
+				'post_type'              => 'product',
+				'post_status'            => $statuses,
+				'posts_per_page'         => -1,
+				'fields'                 => 'ids',
+				'no_found_rows'          => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+				'tax_query'              => array(
 					array(
 						'taxonomy' => 'product_cat',
 						'field'    => 'slug',
@@ -146,7 +159,7 @@ class SPBF_Product {
 		);
 
 		$ids = array_values( array_unique( array_map( 'absint', (array) $ids ) ) );
-		return apply_filters( 'spbf_qualifying_product_ids', $ids );
+		return apply_filters( 'spbf_qualifying_product_ids', $ids, $include_private );
 	}
 
 	/**

@@ -83,6 +83,17 @@ class SPBF_Promotion {
 	}
 
 	/**
+	 * During Admin testing only, include private products in the collection for testers.
+	 *
+	 * @return bool
+	 */
+	public static function should_include_private_products() {
+		return 'admin_only' === SPBF_Settings::get( 'visibility', 'admin_only' )
+			&& current_user_can( 'manage_woocommerce' )
+			&& self::is_active_for_current_user();
+	}
+
+	/**
 	 * Formatted end date for customer messaging.
 	 *
 	 * @return string
