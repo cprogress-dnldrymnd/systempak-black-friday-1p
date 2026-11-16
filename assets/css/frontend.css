@@ -37,6 +37,23 @@
 .spbf-notice--compact {
 	margin: 0.5rem 0;
 	font-size: 0.9rem;
+	text-align: left;
+}
+
+.spbf-notice__title {
+	display: block;
+	margin: 0 0 0.35rem;
+	text-align: left;
+}
+
+.spbf-notice__copy {
+	margin: 0;
+	text-align: left;
+	line-height: 1.45;
+	overflow-wrap: break-word;
+	word-break: normal;
+	hyphens: none;
+	-webkit-hyphens: none;
 }
 
 .spbf-collection__header {
@@ -152,4 +169,21 @@
 .spbf-cart-reminder td {
 	padding-top: 0.5rem !important;
 	padding-bottom: 0.5rem !important;
+	text-align: left !important;
+}
+
+.spbf-cart-reminder .spbf-notice,
+.spbf-cart-reminder .spbf-notice__title,
+.spbf-cart-reminder .spbf-notice__copy {
+	text-align: left !important;
+	hyphens: none !important;
+	-webkit-hyphens: none !important;
+}
+
+/* Prefer wrapping at spaces; avoid mid-word splits like “Ma” / “x”. */
+.spbf-cart-reminder .spbf-notice__copy {
+	overflow-wrap: break-word !important;
+	word-break: normal !important;
+	word-wrap: break-word !important;
+	white-space: normal !important;
 }

@@ -71,18 +71,20 @@ class SPBF_Frontend {
 		<tr class="spbf-cart-reminder">
 			<td colspan="2">
 				<div class="spbf-notice spbf-notice--compact">
-					<strong><?php esc_html_e( 'Black Friday – 1p a Box', 'systempak-bf-1p' ); ?></strong>
-					<?php
-					echo esc_html(
-						sprintf(
-							/* translators: 1: per-box fee 2: promo qty 3: max */
-							__( 'Promotional delivery £%1$s applies to each Black Friday box (%2$d in basket). Max %3$d per product. UK delivery only; regional surcharges may still apply.', 'systempak-bf-1p' ),
-							wc_format_decimal( $per_box, 2 ),
-							$qty,
-							$max
-						)
-					);
-					?>
+					<strong class="spbf-notice__title"><?php esc_html_e( 'Black Friday – 1p a Box', 'systempak-bf-1p' ); ?></strong>
+					<p class="spbf-notice__copy">
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: 1: per-box fee 2: promo qty 3: max. Use a non-breaking space before the max number. */
+								__( 'Promotional delivery £%1$s applies to each Black Friday box (%2$d in basket). Max %3$d per product. UK delivery only; regional surcharges may still apply.', 'systempak-bf-1p' ),
+								wc_format_decimal( $per_box, 2 ),
+								$qty,
+								$max
+							)
+						);
+						?>
+					</p>
 				</div>
 			</td>
 		</tr>
