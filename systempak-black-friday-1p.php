@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SystemPAK Black Friday 1p a Box
  * Description: Black Friday “1p a Box” promotion — £0.01 pricing, max 4 per product, £10.95 per-box promotional delivery, UK-only, coupon exclusion. Defaults to admin-only testing so customers never see it until you go live.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: SystemPAK
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -14,12 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SPBF_VERSION', '1.1.0' );
+define( 'SPBF_VERSION', '1.2.0' );
 define( 'SPBF_FILE', __FILE__ );
 define( 'SPBF_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SPBF_URL', plugin_dir_url( __FILE__ ) );
 define( 'SPBF_OPTION_KEY', 'spbf_settings' );
 define( 'SPBF_PRODUCT_META', '_spbf_1p_offer' );
+define( 'SPBF_VARIATION_MODE_META', '_spbf_variation_mode' );
 define( 'SPBF_CATEGORY_SLUG', 'black-friday-1p-offer' );
 
 require_once SPBF_PATH . 'includes/class-spbf-settings.php';

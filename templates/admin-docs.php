@@ -66,13 +66,14 @@ $products_link   = admin_url( 'edit.php?post_type=product' );
 				echo wp_kses_post(
 					sprintf(
 						/* translators: %s: category admin URL */
-						__( '<strong>Simple products:</strong> add them to the <a href="%s">Black Friday 1p Offer</a> category.', 'systempak-bf-1p' ),
+						__( 'Add the product to the <a href="%s">Black Friday 1p Offer</a> category.', 'systempak-bf-1p' ),
 						esc_url( $cat_link )
 					)
 				);
 				?>
 			</li>
-			<li><?php esc_html_e( 'Variable products: open the Variations tab and tick “Include in Black Friday 1p Offer” on each variation that should be in the promotion. Unticked variations keep normal / tier pricing.', 'systempak-bf-1p' ); ?></li>
+			<li><?php esc_html_e( 'Simple products: category membership is enough.', 'systempak-bf-1p' ); ?></li>
+			<li><?php esc_html_e( 'Variable products: all variations are included by default. Use the “Black Friday 1p Offer — Variations” meta box to switch to Specific variations and tick name/SKU rows.', 'systempak-bf-1p' ); ?></li>
 		</ul>
 		<p>
 			<a class="button" href="<?php echo esc_url( $products_link ); ?>"><?php esc_html_e( 'Edit products', 'systempak-bf-1p' ); ?></a>
@@ -105,14 +106,14 @@ $products_link   = admin_url( 'edit.php?post_type=product' );
 				<?php esc_html_e( 'Not set — create a page with [spbf_collection] and select it under Settings.', 'systempak-bf-1p' ); ?>
 			<?php endif; ?>
 		</p>
-		<p><em><?php esc_html_e( 'While Visibility is Admin testing only, [spbf_collection] also shows private products that qualify (category simples or parents with a flagged variation). Live mode shows published products only.', 'systempak-bf-1p' ); ?></em></p>
+		<p><em><?php esc_html_e( 'While Visibility is Admin testing only, [spbf_collection] also shows private products in the Black Friday category. Live mode shows published products only.', 'systempak-bf-1p' ); ?></em></p>
 	</section>
 
 	<section id="spbf-docs-test" class="spbf-docs__section">
 		<h3><?php esc_html_e( '4. How to check the plugin is working', 'systempak-bf-1p' ); ?></h3>
 		<ol>
 			<li><?php esc_html_e( 'Stay on “Admin testing only”. Confirm “Active for you right now?” is Yes on the Settings tab.', 'systempak-bf-1p' ); ?></li>
-			<li><?php esc_html_e( 'Assign one in-stock test SKU (simple → category, or variable → tick the variation checkbox).', 'systempak-bf-1p' ); ?></li>
+			<li><?php esc_html_e( 'Assign one in-stock test SKU to the Black Friday 1p Offer category (variable products include all variations unless you choose Specific in the meta box).', 'systempak-bf-1p' ); ?></li>
 			<li><?php esc_html_e( 'While logged in as admin, open the product page → expect £0.01 and the Black Friday notice.', 'systempak-bf-1p' ); ?></li>
 			<li><?php esc_html_e( 'Open the same page Incognito (logged out) → expect normal price / no notice.', 'systempak-bf-1p' ); ?></li>
 			<li><?php esc_html_e( 'Add 1 box to the basket → expect £0.01 + £10.95 promotional delivery fee.', 'systempak-bf-1p' ); ?></li>
