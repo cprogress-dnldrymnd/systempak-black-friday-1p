@@ -24,7 +24,17 @@ $price   = SPBF_Pricing::get_promo_price();
 	</p>
 	<ul class="spbf-notice__list">
 		<li><?php echo esc_html( sprintf( __( 'Maximum %d boxes per product.', 'systempak-bf-1p' ), $max ) ); ?></li>
-		<li><?php esc_html_e( 'UK only. Regional delivery surcharges may apply.', 'systempak-bf-1p' ); ?></li>
+		<li>
+			<?php
+			echo esc_html(
+				sprintf(
+					/* translators: %s: destination rule e.g. UK delivery only */
+					__( '%s. Regional delivery surcharges may apply.', 'systempak-bf-1p' ),
+					SPBF_Restrictions::get_destination_rule_text()
+				)
+			);
+			?>
+		</li>
 		<?php if ( $end ) : ?>
 			<li><?php echo esc_html( sprintf( __( 'Offer ends %s.', 'systempak-bf-1p' ), $end ) ); ?></li>
 		<?php endif; ?>

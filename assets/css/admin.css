@@ -614,3 +614,38 @@ body.woocommerce_page_spbf-settings #wpbody-content > .qlwapp-notice {
 #spbf_variation_offer.spbf-metabox--inactive .postbox-header h2 {
 	opacity: 0.72;
 }
+
+/* Allowed countries checklist */
+.spbf-country-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 0 0 12px;
+}
+
+.spbf-country-list {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 2px 12px;
+	max-height: 280px;
+	overflow: auto;
+	padding: 12px;
+	border: 1px solid var(--spbf-line, #dde3e6);
+	border-radius: 10px;
+	background: #fff;
+}
+
+.spbf-country-list__item {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	margin: 0;
+	padding: 6px 4px;
+	font-weight: 500;
+	color: #142f38;
+	cursor: pointer;
+}
+
+.spbf-country-list__item input {
+	margin-top: 2px;
+}

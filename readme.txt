@@ -3,7 +3,7 @@ Contributors: systempak
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.3
+Stable tag: 1.3.0
 License: GPLv2 or later
 
 Black Friday “1p a Box” promotion for SystemPAK WooCommerce.
@@ -13,7 +13,7 @@ Black Friday “1p a Box” promotion for SystemPAK WooCommerce.
 * £0.01 promotional price on flagged products (overrides Tier Pricing Table while active)
 * Max 4 boxes per promotional product
 * £10.95 cart fee per promotional box (alongside existing Flexible Shipping / regional / pallet charges)
-* UK shipping destination only
+* Configurable allowed shipping countries (default UK); disallowed destinations auto-remove promo items
 * Coupon and BOGO exclusion on promotional lines
 * Scheduled start/end (Europe/London by default)
 * Visibility: Off / Admin testing only (default) / Live

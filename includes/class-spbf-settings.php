@@ -106,6 +106,13 @@ class SPBF_Settings {
 			array(),
 			SPBF_VERSION
 		);
+		wp_enqueue_script(
+			'spbf-settings-admin',
+			SPBF_URL . 'assets/js/settings-admin.js',
+			array(),
+			SPBF_VERSION,
+			true
+		);
 	}
 
 	/**
@@ -171,6 +178,21 @@ class SPBF_Settings {
 		$out['collection_page_id']  = isset( $input['collection_page_id'] ) ? absint( $input['collection_page_id'] ) : 0;
 		$out['show_product_notice'] = ( ! empty( $input['show_product_notice'] ) && 'yes' === $input['show_product_notice'] ) ? 'yes' : 'no';
 		unset( $out['show_banner'] );
+
+		$out['allowed_countries'] = array( 'GB' );
+		if ( ! empty( $input['allowed_countries'] ) && is_array( $input['allowed_countries'] ) ) {
+			$valid = ( function_exists( 'WC' ) && WC()->countries ) ? array_keys( WC()->countries->get_countries() ) : array( 'GB' );
+			$clean = array();
+			foreach ( $input['allowed_countries'] as $code ) {
+				$code = strtoupper( sanitize_text_field( (string) $code ) );
+				if ( in_array( $code, $valid, true ) ) {
+					$clean[] = $code;
+				}
+			}
+			if ( ! empty( $clean ) ) {
+				$out['allowed_countries'] = array_values( array_unique( $clean ) );
+			}
+		}
 
 		return $out;
 	}
@@ -378,6 +400,38 @@ class SPBF_Settings {
 							</td>
 						</tr>
 					</table>
+				</div>
+			</section>
+
+			<section class="spbf-card">
+				<div class="spbf-card__header">
+					<h2><?php esc_html_e( 'Allowed shipping countries', 'systempak-bf-1p' ); ?></h2>
+					<p><?php esc_html_e( 'Promotional products are only available when the customer’s shipping destination is one of these countries. If they choose another country at checkout, Black Friday items are removed automatically with a notice.', 'systempak-bf-1p' ); ?></p>
+				</div>
+				<div class="spbf-card__body">
+					<?php
+					$selected_countries = isset( $s['allowed_countries'] ) && is_array( $s['allowed_countries'] ) ? array_map( 'strtoupper', $s['allowed_countries'] ) : array( 'GB' );
+					$wc_countries       = ( function_exists( 'WC' ) && WC()->countries ) ? WC()->countries->get_countries() : array( 'GB' => 'United Kingdom (UK)' );
+					?>
+					<div class="spbf-country-toolbar">
+						<button type="button" class="button spbf-country-select-all" data-spbf-countries="all"><?php esc_html_e( 'Select all', 'systempak-bf-1p' ); ?></button>
+						<button type="button" class="button spbf-country-select-none" data-spbf-countries="none"><?php esc_html_e( 'Clear', 'systempak-bf-1p' ); ?></button>
+						<button type="button" class="button spbf-country-select-gb" data-spbf-countries="gb"><?php esc_html_e( 'UK only', 'systempak-bf-1p' ); ?></button>
+					</div>
+					<div class="spbf-country-list" id="spbf-allowed-countries">
+						<?php foreach ( $wc_countries as $code => $label ) : ?>
+							<label class="spbf-country-list__item">
+								<input
+									type="checkbox"
+									name="<?php echo esc_attr( $opt ); ?>[allowed_countries][]"
+									value="<?php echo esc_attr( $code ); ?>"
+									<?php checked( in_array( strtoupper( (string) $code ), $selected_countries, true ) ); ?>
+								/>
+								<span><?php echo esc_html( $label ); ?></span>
+							</label>
+						<?php endforeach; ?>
+					</div>
+					<p class="description"><?php esc_html_e( 'Default is United Kingdom (GB). At least one country is required; clearing all reverts to GB on save.', 'systempak-bf-1p' ); ?></p>
 				</div>
 			</section>
 

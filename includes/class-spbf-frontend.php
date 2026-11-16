@@ -76,11 +76,12 @@ class SPBF_Frontend {
 						<?php
 						echo esc_html(
 							sprintf(
-								/* translators: 1: per-box fee 2: promo qty 3: max. Use a non-breaking space before the max number. */
-								__( 'Promotional delivery £%1$s applies to each Black Friday box (%2$d in basket). Max %3$d per product. UK delivery only; regional surcharges may still apply.', 'systempak-bf-1p' ),
+								/* translators: 1: per-box fee 2: promo qty 3: max 4: destination rule */
+								__( 'Promotional delivery £%1$s applies to each Black Friday box (%2$d in basket). Max %3$d per product. %4$s; regional surcharges may still apply.', 'systempak-bf-1p' ),
 								wc_format_decimal( $per_box, 2 ),
 								$qty,
-								$max
+								$max,
+								SPBF_Restrictions::get_destination_rule_text()
 							)
 						);
 						?>

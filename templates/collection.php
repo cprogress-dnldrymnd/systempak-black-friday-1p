@@ -30,9 +30,11 @@ $wrapper_class = 'spbf-collection spbf-collection--count-' . absint( $count );
 			echo esc_html(
 				sprintf(
 					/* translators: 1: delivery per box 2: max qty */
-					__( 'Selected boxes for 1p each, plus £%1$s delivery per promotional box. Maximum %2$d boxes per product. UK delivery only — existing regional or pallet charges may still apply on top.', 'systempak-bf-1p' ),
+					/* translators: 1: delivery per box 2: max qty 3: destination rule */
+					__( 'Selected boxes for 1p each, plus £%1$s delivery per promotional box. Maximum %2$d boxes per product. %3$s — existing regional or pallet charges may still apply on top.', 'systempak-bf-1p' ),
 					wc_format_decimal( $per_box, 2 ),
-					$max
+					$max,
+					SPBF_Restrictions::get_destination_rule_text()
 				)
 			);
 			?>

@@ -120,7 +120,7 @@ $products_link   = admin_url( 'edit.php?post_type=product' );
 			<li><?php esc_html_e( 'Try quantity 5 → should be blocked (max 4 per product).', 'systempak-bf-1p' ); ?></li>
 			<li><?php esc_html_e( 'Mix with a normal product → promotional fee remains; normal shipping rules still apply.', 'systempak-bf-1p' ); ?></li>
 			<li><?php esc_html_e( 'Apply a coupon → promo product and £10.95 fee must not be discounted.', 'systempak-bf-1p' ); ?></li>
-			<li><?php esc_html_e( 'At checkout, set a non-UK shipping country → clear UK-only error.', 'systempak-bf-1p' ); ?></li>
+			<li><?php esc_html_e( 'At checkout, set a shipping country outside Allowed shipping countries → promotional products are removed automatically with a notice.', 'systempak-bf-1p' ); ?></li>
 		</ol>
 	</section>
 
@@ -132,7 +132,7 @@ $products_link   = admin_url( 'edit.php?post_type=product' );
 			<li><?php esc_html_e( 'Delivery fee: £10.95 × total promotional boxes in the basket (cart fee, separate from shipping).', 'systempak-bf-1p' ); ?></li>
 			<li><?php esc_html_e( 'Mixed baskets: normal pallet / regional / Highlands surcharges still apply on top.', 'systempak-bf-1p' ); ?></li>
 			<li><?php esc_html_e( 'Free shipping on the rest of the order does not remove the £10.95 fee.', 'systempak-bf-1p' ); ?></li>
-			<li><?php esc_html_e( 'UK shipping destination only.', 'systempak-bf-1p' ); ?></li>
+			<li><?php esc_html_e( 'Shipping destination must match Allowed shipping countries (default: United Kingdom). Disallowed destinations auto-remove promo items.', 'systempak-bf-1p' ); ?></li>
 			<li><?php esc_html_e( 'Coupons and BOGO do not discount promotional lines or the promo fee.', 'systempak-bf-1p' ); ?></li>
 			<li><?php esc_html_e( 'Default schedule: Friday 27 Nov 2026 00:00 → Monday 30 Nov 2026 17:00 (Europe/London).', 'systempak-bf-1p' ); ?></li>
 		</ul>
