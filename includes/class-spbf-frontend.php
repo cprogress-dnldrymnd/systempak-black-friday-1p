@@ -14,6 +14,12 @@ class SPBF_Frontend {
 		add_shortcode( 'spbf_collection', array( $this, 'shortcode_collection' ) );
 		add_action( 'woocommerce_cart_totals_before_shipping', array( $this, 'cart_reminder' ) );
 		add_action( 'woocommerce_review_order_before_shipping', array( $this, 'cart_reminder' ) );
+
+		// WPC Variations Radio Buttons — badge on promotional SKUs.
+		add_filter( 'woovr_variation_name', array( $this, 'filter_woovr_variation_name' ), 20, 2 );
+		add_filter( 'woovr_variation_class', array( $this, 'filter_woovr_variation_class' ), 20, 2 );
+		add_filter( 'woovr_data_attributes', array( $this, 'filter_woovr_data_attributes' ), 20, 2 );
+		add_filter( 'woocommerce_available_variation', array( $this, 'filter_available_variation' ), 20, 3 );
 	}
 
 	public function enqueue_assets() {
@@ -26,6 +32,94 @@ class SPBF_Frontend {
 			array(),
 			SPBF_VERSION
 		);
+		if ( is_product() ) {
+			wp_enqueue_script(
+				'spbf-frontend',
+				SPBF_URL . 'assets/js/frontend.js',
+				array( 'jquery' ),
+				SPBF_VERSION,
+				true
+			);
+			wp_localize_script(
+				'spbf-frontend',
+				'spbfFrontend',
+				array(
+					'badgeLabel' => __( 'Black Friday', 'systempak-bf-1p' ),
+				)
+			);
+		}
+	}
+
+	/**
+	 * Small badge markup for variation labels / SKU line.
+	 *
+	 * @return string
+	 */
+	public static function get_variation_badge_html() {
+		return '<span class="spbf-variation-badge">' . esc_html__( 'Black Friday', 'systempak-bf-1p' ) . '</span>';
+	}
+
+	/**
+	 * @param string     $name Variation name HTML.
+	 * @param WC_Product $variation Variation product.
+	 * @return string
+	 */
+	public function filter_woovr_variation_name( $name, $variation ) {
+		if ( ! SPBF_Promotion::is_active_for_current_user() || ! $variation instanceof WC_Product ) {
+			return $name;
+		}
+		if ( ! SPBF_Product::is_qualifying_product( $variation->get_id() ) ) {
+			return $name;
+		}
+		return $name . ' ' . self::get_variation_badge_html();
+	}
+
+	/**
+	 * @param string     $class Variation wrapper classes.
+	 * @param WC_Product $variation Variation product.
+	 * @return string
+	 */
+	public function filter_woovr_variation_class( $class, $variation ) {
+		if ( ! SPBF_Promotion::is_active_for_current_user() || ! $variation instanceof WC_Product ) {
+			return $class;
+		}
+		if ( SPBF_Product::is_qualifying_product( $variation->get_id() ) ) {
+			$class .= ' spbf-has-offer';
+		}
+		return $class;
+	}
+
+	/**
+	 * @param array      $attrs Data attributes.
+	 * @param WC_Product $variation Variation product.
+	 * @return array
+	 */
+	public function filter_woovr_data_attributes( $attrs, $variation ) {
+		if ( ! is_array( $attrs ) ) {
+			return $attrs;
+		}
+		$attrs['spbf'] = 'no';
+		if ( SPBF_Promotion::is_active_for_current_user() && $variation instanceof WC_Product && SPBF_Product::is_qualifying_product( $variation->get_id() ) ) {
+			$attrs['spbf'] = 'yes';
+		}
+		return $attrs;
+	}
+
+	/**
+	 * @param array      $data Variation JSON.
+	 * @param WC_Product $product Parent.
+	 * @param WC_Product $variation Variation.
+	 * @return array
+	 */
+	public function filter_available_variation( $data, $product, $variation ) {
+		if ( ! is_array( $data ) ) {
+			return $data;
+		}
+		$data['spbf_1p_offer'] = false;
+		if ( SPBF_Promotion::is_active_for_current_user() && $variation instanceof WC_Product && SPBF_Product::is_qualifying_product( $variation->get_id() ) ) {
+			$data['spbf_1p_offer'] = true;
+		}
+		return $data;
 	}
 
 	/**

@@ -166,6 +166,40 @@
 	content: none !important;
 }
 
+/* Variation / SKU Black Friday bubble */
+.spbf-variation-badge {
+	display: inline-block;
+	margin-left: 0.45em;
+	padding: 0.2em 0.55em;
+	font-size: 0.68em;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	line-height: 1.2;
+	vertical-align: middle;
+	white-space: nowrap;
+	border-radius: 999px;
+	background: #c45c26;
+	color: #fff !important;
+}
+
+.woovr-variation.spbf-has-offer .woovr-variation-name label {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.35rem;
+}
+
+.woovr-variation.spbf-has-offer .spbf-variation-badge,
+.sku-meta .spbf-variation-badge {
+	position: relative;
+	z-index: 2;
+}
+
+.sku-meta .spbf-variation-badge {
+	margin-left: 0.5rem;
+}
+
 .spbf-cart-reminder td {
 	padding-top: 0.5rem !important;
 	padding-bottom: 0.5rem !important;
