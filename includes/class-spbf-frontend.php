@@ -119,15 +119,48 @@ class SPBF_Frontend {
 			add_filter( 'woocommerce_shortcode_products_query', array( $this, 'allow_private_in_products_shortcode' ), 20, 3 );
 		}
 
+		$this->begin_collection_loop();
+
 		ob_start();
 		include SPBF_PATH . 'templates/collection.php';
 		$html = ob_get_clean();
+
+		$this->end_collection_loop();
 
 		if ( $include_private ) {
 			remove_filter( 'woocommerce_shortcode_products_query', array( $this, 'allow_private_in_products_shortcode' ), 20 );
 		}
 
 		return $html;
+	}
+
+	/**
+	 * Swap Free Sample for the normal loop Add to cart / Select options button.
+	 */
+	private function begin_collection_loop() {
+		if ( function_exists( 'custom_button_below_listing' ) ) {
+			remove_action( 'woocommerce_after_shop_loop_item', 'custom_button_below_listing', 15 );
+		}
+		add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_collection_add_to_cart' ), 15 );
+	}
+
+	/**
+	 * Restore theme Free Sample button after the collection shortcode.
+	 */
+	private function end_collection_loop() {
+		remove_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_collection_add_to_cart' ), 15 );
+		if ( function_exists( 'custom_button_below_listing' ) ) {
+			add_action( 'woocommerce_after_shop_loop_item', 'custom_button_below_listing', 15 );
+		}
+	}
+
+	/**
+	 * Normal WooCommerce loop CTA for collection cards.
+	 */
+	public function render_collection_add_to_cart() {
+		echo '<div class="spbf-collection__atc">';
+		woocommerce_template_loop_add_to_cart();
+		echo '</div>';
 	}
 
 	/**

@@ -108,6 +108,47 @@
 	display: none !important;
 }
 
+/* Free Sample → normal Add to cart / Select options on the BF collection */
+.spbf-collection .custom-listing-button {
+	display: none !important;
+}
+
+.spbf-collection .product-block .product-caption .quantity_cart {
+	display: none !important;
+}
+
+.spbf-collection__atc {
+	margin-top: 0.85rem;
+}
+
+.spbf-collection__atc .add_to_cart {
+	width: 100%;
+}
+
+.spbf-collection__atc a.button,
+.spbf-collection__atc a.add_to_cart_button,
+.spbf-collection__atc a.product_type_simple,
+.spbf-collection__atc a.product_type_variable {
+	display: inline-flex !important;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 0.7rem 1rem !important;
+	font-size: 0.95rem !important;
+	font-weight: 600;
+	line-height: 1.2;
+	text-indent: 0 !important;
+	text-align: center;
+	white-space: normal;
+}
+
+.spbf-collection__atc a.button:before,
+.spbf-collection__atc a.add_to_cart_button:before {
+	display: none !important;
+	content: none !important;
+}
+
 .spbf-cart-reminder td {
 	padding-top: 0.5rem !important;
 	padding-bottom: 0.5rem !important;
