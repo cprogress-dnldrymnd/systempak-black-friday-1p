@@ -35,6 +35,8 @@ class SPBF_Pricing {
 	}
 
 	/**
+	 * Exact promotional SKU (simple or variation) — used for cart/price filters.
+	 *
 	 * @param WC_Product $product Product.
 	 * @return bool
 	 */
@@ -46,6 +48,54 @@ class SPBF_Pricing {
 			return false;
 		}
 		return SPBF_Product::is_qualifying_product( $product->get_id() );
+	}
+
+	/**
+	 * Whether catalog / loop price HTML should show the 1p offer.
+	 * Variable parents qualify via has_promo_offer() (they are never cart SKUs).
+	 *
+	 * @param WC_Product $product Product.
+	 * @return bool
+	 */
+	private function should_override_price_html( $product ) {
+		if ( ! SPBF_Promotion::is_active_for_current_user() ) {
+			return false;
+		}
+		if ( ! $product instanceof WC_Product ) {
+			return false;
+		}
+		if ( $product->is_type( 'variable' ) ) {
+			return SPBF_Product::has_promo_offer( $product->get_id() );
+		}
+		return SPBF_Product::is_qualifying_product( $product->get_id() );
+	}
+
+	/**
+	 * Build clean promo price HTML (optional “From” when only some variations qualify).
+	 *
+	 * @param WC_Product $product Product.
+	 * @return string
+	 */
+	private function get_promo_price_html( $product ) {
+		$price   = self::get_promo_price();
+		$display = wc_price(
+			wc_get_price_to_display(
+				$product,
+				array(
+					'price' => $price,
+				)
+			)
+		) . $product->get_price_suffix( $price );
+
+		if ( $product->is_type( 'variable' ) ) {
+			$children   = $product->get_children();
+			$qualifying = SPBF_Product::get_qualifying_variation_ids( $product->get_id() );
+			if ( ! empty( $children ) && count( $qualifying ) < count( $children ) && function_exists( 'wc_get_price_html_from_text' ) ) {
+				return wc_get_price_html_from_text() . $display;
+			}
+		}
+
+		return $display;
 	}
 
 	/**
@@ -142,23 +192,16 @@ class SPBF_Pricing {
 	 * @return string
 	 */
 	public function filter_price_html( $html, $product ) {
-		if ( ! $this->is_active_promo_product( $product ) ) {
+		if ( ! $this->should_override_price_html( $product ) ) {
 			return $html;
 		}
-
-		$price = self::get_promo_price();
-		return wc_price(
-			wc_get_price_to_display(
-				$product,
-				array(
-					'price' => $price,
-				)
-			)
-		) . $product->get_price_suffix( $price );
+		return $this->get_promo_price_html( $product );
 	}
 
 	/**
 	 * Override Tier Pricing catalog price HTML for promo products.
+	 * Tier often prints “From £X” on variable parents using tier rules — that bypasses
+	 * variation price filters, so we must replace it when the parent is in the offer.
 	 *
 	 * @param string     $html Tier HTML.
 	 * @param string     $default Default HTML.
@@ -166,10 +209,10 @@ class SPBF_Pricing {
 	 * @return string
 	 */
 	public function filter_tier_catalog_price_html( $html, $default, $product ) {
-		if ( $this->is_active_promo_product( $product ) ) {
-			return $this->filter_price_html( '', $product );
+		if ( ! $this->should_override_price_html( $product ) ) {
+			return $html;
 		}
-		return $html;
+		return $this->get_promo_price_html( $product );
 	}
 
 	/**
@@ -200,9 +243,14 @@ class SPBF_Pricing {
 		if ( ! SPBF_Promotion::is_active_for_current_user() ) {
 			return $should;
 		}
-		// Only hide the tier table for the exact promotional variation (not the whole variable parent).
-		$check_id = $variation_id ? (int) $variation_id : (int) $parent_product_id;
-		if ( SPBF_Product::is_qualifying_product( $check_id ) ) {
+		if ( $variation_id ) {
+			if ( SPBF_Product::is_qualifying_product( (int) $variation_id ) ) {
+				return false;
+			}
+			return $should;
+		}
+		// Parent / catalog context: hide when the variable product is in the offer (all mode or any specific).
+		if ( SPBF_Product::has_promo_offer( (int) $parent_product_id ) ) {
 			return false;
 		}
 		return $should;
@@ -217,6 +265,10 @@ class SPBF_Pricing {
 	public function variation_prices_hash( $hash, $product, $display ) {
 		if ( SPBF_Promotion::is_active_for_current_user() ) {
 			$hash[] = 'spbf-active-' . self::get_promo_price();
+			if ( $product instanceof WC_Product ) {
+				$hash[] = 'spbf-mode-' . SPBF_Product::get_variation_mode( $product->get_id() );
+				$hash[] = 'spbf-vars-' . implode( ',', SPBF_Product::get_qualifying_variation_ids( $product->get_id() ) );
+			}
 		} else {
 			$hash[] = 'spbf-inactive';
 		}
