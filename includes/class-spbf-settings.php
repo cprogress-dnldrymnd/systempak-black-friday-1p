@@ -426,8 +426,8 @@ class SPBF_Settings {
 
 		<div class="spbf-callout">
 			<div>
-				<h2><?php esc_html_e( 'Assign products via category', 'systempak-bf-1p' ); ?></h2>
-				<p><?php esc_html_e( 'Add SKUs to the “Black Friday 1p Offer” product category. That is the only way to include a product in the promotion.', 'systempak-bf-1p' ); ?></p>
+				<h2><?php esc_html_e( 'Assign products', 'systempak-bf-1p' ); ?></h2>
+				<p><?php esc_html_e( 'Simple products: add them to the “Black Friday 1p Offer” category. Variable products: open Variations and tick “Include in Black Friday 1p Offer” on each variation that should be included.', 'systempak-bf-1p' ); ?></p>
 			</div>
 			<div class="spbf-callout__buttons">
 				<a class="spbf-btn spbf-btn--primary" href="<?php echo esc_url( $cat_link ); ?>"><?php esc_html_e( 'Open category', 'systempak-bf-1p' ); ?></a>

@@ -36,9 +36,9 @@ class SPBF_Quantity {
 			return $passed;
 		}
 
+		// For variable products the variation ID is the promotional SKU.
 		$check_id = $variation_id ? (int) $variation_id : (int) $product_id;
-		$qualifies = SPBF_Product::is_qualifying_product( $check_id ) || SPBF_Product::is_qualifying_product( (int) $product_id );
-		if ( ! $qualifies ) {
+		if ( ! SPBF_Product::is_qualifying_product( $check_id ) ) {
 			return $passed;
 		}
 
@@ -168,7 +168,7 @@ class SPBF_Quantity {
 		if ( ! SPBF_Promotion::is_active_for_current_user() || ! $variation instanceof WC_Product ) {
 			return $data;
 		}
-		if ( ! SPBF_Product::is_qualifying_product( $variation->get_id() ) && ! SPBF_Product::is_qualifying_product( $product->get_id() ) ) {
+		if ( ! SPBF_Product::is_qualifying_product( $variation->get_id() ) ) {
 			return $data;
 		}
 

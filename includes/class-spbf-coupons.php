@@ -74,9 +74,12 @@ class SPBF_Coupons {
 				return false;
 			}
 		}
-		// Product ID style payload from product rules getter.
-		if ( is_array( $cart_item ) && ! empty( $cart_item['product_id'] ) ) {
-			if ( SPBF_Product::is_qualifying_product( (int) $cart_item['product_id'] ) ) {
+		// Product / variation ID style payload from product rules getter.
+		if ( is_array( $cart_item ) ) {
+			$check_id = ! empty( $cart_item['variation_id'] )
+				? (int) $cart_item['variation_id']
+				: ( ! empty( $cart_item['product_id'] ) ? (int) $cart_item['product_id'] : 0 );
+			if ( $check_id && SPBF_Product::is_qualifying_product( $check_id ) ) {
 				return false;
 			}
 		}

@@ -200,8 +200,9 @@ class SPBF_Pricing {
 		if ( ! SPBF_Promotion::is_active_for_current_user() ) {
 			return $should;
 		}
+		// Only hide the tier table for the exact promotional variation (not the whole variable parent).
 		$check_id = $variation_id ? (int) $variation_id : (int) $parent_product_id;
-		if ( SPBF_Product::is_qualifying_product( $check_id ) || SPBF_Product::is_qualifying_product( (int) $parent_product_id ) ) {
+		if ( SPBF_Product::is_qualifying_product( $check_id ) ) {
 			return false;
 		}
 		return $should;

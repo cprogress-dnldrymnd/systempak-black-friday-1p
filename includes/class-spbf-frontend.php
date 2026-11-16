@@ -44,16 +44,7 @@ class SPBF_Frontend {
 			return;
 		}
 
-		$qualifies = SPBF_Product::is_qualifying_product( $product->get_id() );
-		if ( ! $qualifies && $product->is_type( 'variable' ) ) {
-			foreach ( $product->get_children() as $child_id ) {
-				if ( SPBF_Product::is_qualifying_product( $child_id ) ) {
-					$qualifies = true;
-					break;
-				}
-			}
-		}
-		if ( ! $qualifies ) {
+		if ( ! SPBF_Product::has_promo_offer( $product->get_id() ) ) {
 			return;
 		}
 
